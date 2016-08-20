@@ -20,9 +20,11 @@ namespace :logrotate do
     if File.file?(path)
       erb = File.read(path)
       config_path = File.join(shared_path, 'logrotate_conf')
+      logrotate_conf = fetch(:logrotate_conf_path)
       upload! StringIO.new(ERB.new(erb).result(binding)), config_path
-      run "mv #{config_path} #{fetch(:logrotate_conf_path)}"
-      run "#{sudo} chown root:root #{fetch(:logrotate_conf_path)}"
+
+      sudo "mv '#{config_path}' '#{logrotate_conf}'"
+      sudo "chown root:root '#{logrotate_conf}'"
     end
   end
 end
